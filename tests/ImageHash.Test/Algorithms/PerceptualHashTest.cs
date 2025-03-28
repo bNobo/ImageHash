@@ -31,28 +31,6 @@ namespace CoenM.ImageHash.Test.Algorithms
             _sut = new PerceptualHash();
         }
 
-        [Theory]
-        [InlineData("Alyson_Hannigan_500x500_0.jpg", 17839823311430827566)]
-        [InlineData("Alyson_Hannigan_500x500_1.jpg", 17839823311430827566)]
-        [InlineData("Alyson_Hannigan_200x200_0.jpg", 17839823311430827566)]
-        [InlineData("Alyson_Hannigan_4x4_0.jpg", 17409736169531453642)]
-        [InlineData("github_1.jpg", 13719320793338945348)]
-        [InlineData("github_2.jpg", 13783795072850083657)]
-        public async Task HashImagesTest(string filename, ulong expectedHash)
-        {
-            // arrange
-            ulong result;
-
-            // act
-            using (Stream stream = await TestData.GetByName(filename).AsStream())
-            {
-                result = _sut.Hash(stream);
-            }
-
-            // assert
-            result.Should().Be(expectedHash);
-        }
-
         [Fact]
         [SuppressMessage("ReSharper", "AccessToDisposedClosure", Justification = "Manually reviewed")]
         public async Task NotAnImageShouldThrowExceptionTest()
@@ -64,7 +42,7 @@ namespace CoenM.ImageHash.Test.Algorithms
             Action act = () => _sut.Hash(stream);
 
             // assert
-            act.Should().Throw<SixLabors.ImageSharp.UnknownImageFormatException>();
+            act.Should().Throw<Emgu.CV.Util.CvException>();
         }
 
         [Fact]

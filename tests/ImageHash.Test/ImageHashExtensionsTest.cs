@@ -28,14 +28,14 @@ namespace CoenM.ImageHash.Test
         public async Task HashStreamShouldReadStreamAsImageAndPassDataToHashAlgorithmTest()
         {
             // arrange
-            A.CallTo(() => _hashAlgorithm.Hash(A<Image<Rgba32>>._)).Returns(0UL);
+            A.CallTo(() => _hashAlgorithm.Hash(new Emgu.CV.Mat())).Returns(0UL);
             using Stream stream = await TestData.AlysonHannigan200x200_0.AsStream();
 
             // act
             var result = Sut.Hash(_hashAlgorithm, stream);
 
             // assert
-            A.CallTo(() => _hashAlgorithm.Hash(A<Image<Rgba32>>._)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _hashAlgorithm.Hash(new Emgu.CV.Mat())).MustHaveHappenedOnceExactly();
             result.Should().Be(0UL);
         }
 

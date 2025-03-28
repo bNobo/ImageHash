@@ -1,8 +1,7 @@
 namespace CoenM.ImageHash
 {
     using System;
-    using SixLabors.ImageSharp;
-    using SixLabors.ImageSharp.PixelFormats;
+    using Emgu.CV;
 
     /// <summary>
     /// Interface for perceptual image hashing algorithm.
@@ -13,6 +12,6 @@ namespace CoenM.ImageHash
         /// <param name="image">image to calculate hash from.</param>
         /// <returns>hash value of the image.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="image"/> is <c>null</c>.</exception>
-        ulong Hash(Image<Rgba32> image);
+        ulong Hash(Mat image);
     }
 }

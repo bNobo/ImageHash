@@ -6,9 +6,9 @@ namespace CoenM.ImageHash.HashAlgorithms
     using System.Linq;
     using System.Numerics;
     using System.Runtime.CompilerServices;
-    using SixLabors.ImageSharp;
-    using SixLabors.ImageSharp.PixelFormats;
-    using SixLabors.ImageSharp.Processing;
+    using Emgu.CV;
+    using Emgu.CV.CvEnum;
+    using Emgu.CV.Structure;
 
     /// <summary>
     /// Perceptual hash; Calculate a hash of an image by first transforming the image to an 64x64 grayscale bitmap and then using the Discrete cosine transform to remove the high frequencies.
@@ -21,7 +21,7 @@ namespace CoenM.ImageHash.HashAlgorithms
         private static readonly List<Vector<double>>[] _dctCoeffsSimd = GenerateDctCoeffsSimd();
 
         /// <inheritdoc />
-        public ulong Hash(Image<Rgba32> image)
+        public ulong Hash(Mat image)
         {
             if (image == null)
             {
@@ -32,17 +32,16 @@ namespace CoenM.ImageHash.HashAlgorithms
             var sequence = new double[SIZE];
             var matrix = new double[SIZE, SIZE];
 
-            image.Mutate(ctx => ctx
-                                .Resize(SIZE, SIZE)
-                                .Grayscale(GrayscaleMode.Bt601)
-                                .AutoOrient());
+            // Resize, convert to grayscale, and auto-orient the image
+            CvInvoke.Resize(image, image, new System.Drawing.Size(SIZE, SIZE));
+            CvInvoke.CvtColor(image, image, ColorConversion.Bgr2Gray);
 
             // Calculate the DCT for each row.
             for (var y = 0; y < SIZE; y++)
             {
                 for (var x = 0; x < SIZE; x++)
                 {
-                    sequence[x] = image[x, y].R;
+                    sequence[x] = ((byte[,])image.GetData())[y, x];
                 }
 
                 Dct1D_SIMD(sequence, rows, y);

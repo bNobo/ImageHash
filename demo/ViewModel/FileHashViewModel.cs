@@ -28,8 +28,6 @@ namespace Demo.ViewModel
                         Busy = true;
                         var filename = FileName;
                         Image = await Task.Run(() => LoadImg(filename));
-                        AverageHash = await Task.Run(() => imageHash.CalculateAverageHash(filename));
-                        DifferenceHash = await Task.Run(() => imageHash.CalculateDifferenceHash(filename));
                         PerceptualHash = await Task.Run(() => imageHash.CalculatePerceptualHash(filename));
                         Loaded = true;
                     }

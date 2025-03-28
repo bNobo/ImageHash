@@ -4,8 +4,9 @@ namespace CoenM.ImageHash
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using SixLabors.ImageSharp;
-    using SixLabors.ImageSharp.PixelFormats;
+    using Emgu.CV;
+    using Emgu.CV.CvEnum;
+    using Emgu.CV.Structure;
 
     /// <summary>
     /// Extension methods for IImageHash.
@@ -17,7 +18,6 @@ namespace CoenM.ImageHash
         /// <param name="stream">Stream should 'contain' raw image data.</param>
         /// <returns>hash value.</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="hashImplementation"/> or <paramref name="stream"/> is <c>null</c>.</exception>
-        /// <exception cref="SixLabors.ImageSharp.UnknownImageFormatException">Thrown when stream content cannot be loaded as an image.</exception>
         public static ulong Hash(this IImageHash hashImplementation, Stream stream)
         {
             if (hashImplementation == null)
@@ -30,31 +30,14 @@ namespace CoenM.ImageHash
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            using var image = Image.Load<Rgba32>(stream);
-            return hashImplementation.Hash(image);
-        }
+            // Assuming 'imageStream' is your input stream
+            MemoryStream memoryStream = new MemoryStream();
+            stream.CopyTo(memoryStream);
+            byte[] imageData = memoryStream.ToArray();
+            Mat mat = new Mat();
+            CvInvoke.Imdecode(imageData, ImreadModes.Color, mat);
 
-        /// <summary>Asynchronously calculate the hash of the image (stream) using the hashImplementation.</summary>
-        /// <param name="hashImplementation">HashImplementation to calculate the hash.</param>
-        /// <param name="stream">Stream should 'contain' raw image data.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>hash value.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="hashImplementation"/> or <paramref name="stream"/> is <c>null</c>.</exception>
-        /// <exception cref="SixLabors.ImageSharp.UnknownImageFormatException">Thrown when stream content cannot be loaded as an image.</exception>
-        public static async Task<ulong> HashAsync(this IImageHash hashImplementation, Stream stream, CancellationToken cancellationToken)
-        {
-            if (hashImplementation == null)
-            {
-                throw new ArgumentNullException(nameof(hashImplementation));
-            }
-
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
-            using var image = await Image.LoadAsync<Rgba32>(stream, cancellationToken);
-            return hashImplementation.Hash(image);
+            return hashImplementation.Hash(mat);
         }
     }
 }
