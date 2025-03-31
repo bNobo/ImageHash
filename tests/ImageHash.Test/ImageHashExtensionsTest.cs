@@ -6,6 +6,7 @@ namespace CoenM.ImageHash.Test
     using System.Threading.Tasks;
     using CoenM.ImageHash.Test.Data;
     using EasyTestFileXunit;
+    using Emgu.CV;
     using FakeItEasy;
     using FluentAssertions;
     using SixLabors.ImageSharp;
@@ -28,14 +29,14 @@ namespace CoenM.ImageHash.Test
         public async Task HashStreamShouldReadStreamAsImageAndPassDataToHashAlgorithmTest()
         {
             // arrange
-            A.CallTo(() => _hashAlgorithm.Hash(new Emgu.CV.Mat())).Returns(0UL);
+            A.CallTo(() => _hashAlgorithm.Hash(A<Mat>._)).Returns(0UL);
             using Stream stream = await TestData.AlysonHannigan200x200_0.AsStream();
 
             // act
             var result = Sut.Hash(_hashAlgorithm, stream);
 
             // assert
-            A.CallTo(() => _hashAlgorithm.Hash(new Emgu.CV.Mat())).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _hashAlgorithm.Hash(A<Mat>._)).MustHaveHappenedOnceExactly();
             result.Should().Be(0UL);
         }
 
