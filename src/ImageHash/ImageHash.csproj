@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5;net6</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OS)' != 'Unix'">$(TargetFrameworks);net461;net472</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
     <Description>Perceptual image hashing in netstandard using the ImageSharp library. Includes three hashing algorithms (AverageHash, DifferenceHash, and PerceptualHash).</Description>
     <RootNamespace>CoenM.ImageHash</RootNamespace>
     <AssemblyName>CoenM.ImageSharp.ImageHash</AssemblyName>
@@ -9,13 +8,11 @@
     <PackageTags>ImageHash;DifferenceHash;AverageHash;PerceptualHash;Imaging;ImageSharp</PackageTags>
     <PackageReadmeFile>PackageDescription.md</PackageReadmeFile>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)\PackageDescription.md" Pack="true" PackagePath="$(PackageReadmeFile)" Visible="false" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Emgu.CV.runtime.debian-arm64" Version="4.10.0.5680" />
-    <PackageReference Include="Emgu.CV.runtime.windows" Version="4.10.0.5680" />
+    <PackageReference Include="Emgu.CV.runtime.mini.ubuntu-x64" Version="4.10.0.5680" />
+    <PackageReference Include="Emgu.CV.runtime.mini.windows" Version="4.10.0.5680" />
   </ItemGroup>
 </Project>
